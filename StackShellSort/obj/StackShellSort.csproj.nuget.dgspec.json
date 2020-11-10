@@ -1,0 +1,58 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Projects\\C#\\StackShellSort\\StackShellSort\\StackShellSort.csproj": {}
+  },
+  "projects": {
+    "D:\\Projects\\C#\\StackShellSort\\StackShellSort\\StackShellSort.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Projects\\C#\\StackShellSort\\StackShellSort\\StackShellSort.csproj",
+        "projectName": "StackShellSort",
+        "projectPath": "D:\\Projects\\C#\\StackShellSort\\StackShellSort\\StackShellSort.csproj",
+        "packagesPath": "C:\\Users\\Batroff\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\C#\\StackShellSort\\StackShellSort\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Batroff\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Users\\Batroff\\.dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
