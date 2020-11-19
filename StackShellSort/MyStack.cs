@@ -7,13 +7,11 @@ namespace StackShellSort
     {
         private Stack<int> _tempStack = new Stack<int>();
         private Stack<int> _stack;
+        private Random _random;
 
         public MyStack(int[] arr)
         {
-            _stack = new Stack<int>();
-
-            foreach (int a in arr)
-                _stack.Push(a);
+            _stack = new Stack<int>(arr);
         }
 
         public void Show()
@@ -66,7 +64,7 @@ namespace StackShellSort
             }
         }
 
-        public void ShellSort()
+        private void ShellSort()
         {
             int gap = _stack.Count / 2;
 
@@ -90,6 +88,24 @@ namespace StackShellSort
 
                 gap /= 2;
             }
+        }
+        
+        
+        public void FillStack(int count)
+        {
+            _random = new Random();
+            _stack = new Stack<int>();
+            for (int i = 0; i < count; i++)
+                _stack.Push(_random.Next(count));
+
+            Show();
+        }
+
+        public void Sort()
+        {
+            Console.WriteLine("Sorting...");
+            ShellSort();
+            Show();
         }
     }
 }
