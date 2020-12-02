@@ -1,5 +1,6 @@
 ﻿// 16. Библиотека классов, Стек, Алгоритм Шелла
 
+
 namespace StackShellSort
 {
     class Program

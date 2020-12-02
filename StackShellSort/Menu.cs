@@ -20,6 +20,8 @@ namespace StackShellSort
                     case ConsoleKey.F:
                         Console.Write("\nInsert stack length >> ");
                         int count = Int32.Parse(Console.ReadLine() ?? "10");
+
+                        _stack = new MyStack();
                         _stack.FillStack(count);
                         _stack.Sort();
                         break;
