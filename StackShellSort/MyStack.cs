@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace StackShellSort
 {
@@ -8,16 +9,11 @@ namespace StackShellSort
         private Stack<int> _tempStack = new Stack<int>();
         private Stack<int> _stack;
         private Random _random;
-        private ulong _nOp;
-
-        public MyStack(int[] arr)
-        {
-            _stack = new Stack<int>(arr);
-        }
+        private ulong _nop;
 
         public MyStack()
         {
-            _nOp++;
+            _nop++;
             _stack = new Stack<int>();
         }
 
@@ -31,102 +27,121 @@ namespace StackShellSort
             Console.WriteLine("\n============================================\n");
         }
 
-        private int this[int index]
+        private ulong CalcFn(int n)
         {
-            get
+            return (ulong) (
+                Math.Log2(n) * (16 * Math.Pow(n, 2) + 50 * n + 13) -
+                Math.Log2(n) * (Math.Log2(n) + 1) * (10 * n + 28) + 
+                (8 * Math.Pow(n, 3) + 32 * Math.Pow(n, 2) + 24 * n) /
+                    (Math.Log2(n) * (Math.Log2(n) + 1))
+                );
+        }
+
+        private ulong CalcOfn(int n)
+        {
+            return (ulong) (Math.Pow(n, 3) / Math.Pow(Math.Log2(n), 2) + Math.Pow(n, 2) * Math.Log2(n));
+        }
+
+        private int this[int index] 
+        {
+            get // 4n + 8
             {
                 // Pop elements before index-element and pushing into tempStack
-                _nOp++;
-                for (int i = 0; i < index; i++)
+                _nop += 2;
+                for (int i = 0; i < index; i++) // 1 + 1 + (2 + 2) * index
                 {
-                    _tempStack.Push(_stack.Pop());
-                    _nOp += 4;
+                    _tempStack.Push(_stack.Pop()); // +2
+                    _nop += 4;
                 }
 
                 // Get index-element
-                int res = _stack.Peek();
-                _nOp += 2;
+                int res = _stack.Peek(); // + 1 + 1
+                _nop += 2;
                 
                 // Pushing other elements into tempStack
-                _nOp++;
-                while (_stack.Count > 0)
+                _nop += 2;
+                while (_stack.Count > 0) // 1 + 1 + (2 + 2) * (n - index)
                 {
-                    _tempStack.Push(_stack.Pop());
-                    _nOp += 3;
+                    _tempStack.Push(_stack.Pop()); // 2 + 2
+                    _nop += 4;
                 }
                 
                 // Restore stacks
-                _stack = new Stack<int>(_tempStack);
-                _tempStack.Clear();
-                _nOp += 3;
+                _stack = new Stack<int>(_tempStack); // + 1
+                _tempStack.Clear(); // + 1
+                _nop += 2;
                 
                 return res;
             }
-            set
+            set // 4n + 8
             {
                 // Pop elements before index-element and pushing into tempStack
-                _nOp++;
-                for (int i = 0; i < index; i++)
+                _nop += 2;
+                for (int i = 0; i < index; i++) // 1 + 1 + (2 + 2) * index
                 {
-                    _tempStack.Push(_stack.Pop());
-                    _nOp += 4;
+                    _tempStack.Push(_stack.Pop()); // + 2
+                    _nop += 4;
                 }
 
-                _stack.Pop();
-                _stack.Push(value);
-                _nOp += 2;
+                _stack.Pop(); // + 1
+                _stack.Push(value); // + 1
+                _nop += 2;
                 
                 // Pushing other elements into tempStack
-                _nOp++;
-                while (_stack.Count > 0)
+                _nop += 2;
+                while (_stack.Count > 0) // 1 + 1 + (2 + 2) * (n - index)
                 {
-                    _tempStack.Push(_stack.Pop());
-                    _nOp += 3;
+                    _tempStack.Push(_stack.Pop()); // + 2
+                    _nop += 4;
                 }
 
                 // Restore stacks
-                _stack = new Stack<int>(_tempStack);
-                _tempStack.Clear();
-                _nOp += 2;
+                _stack = new Stack<int>(_tempStack); // + 1
+                _tempStack.Clear(); // + 1 
+                _nop += 2;
             }
         }
 
         private void ShellSort()
         {
-            _nOp += 2;
-            int gap = _stack.Count / 2;
+            int gap = _stack.Count / 2; // 1 + 1
+            _nop += 2;
 
-            while (gap >= 1)
+            _nop += 1;
+            while (gap >= 1) // 2 + 1 + (2 + (2 + (8n + 24 + (12n + 36) * (i / gap)) * (n - gap) + 2) * log2(n) = 
+                             // = 3 ( 
             {
-                _nOp++;
-
-                _nOp += 2;
-                for (int i = gap; i < _stack.Count; i++) // 2 + s(2 + ..)
+                _nop += 2;
+                for (int i = gap; i < _stack.Count; i++) // 2 + (4n + 10 + 2 + 12 + 4n + (12n + 36) * (i / gap)) * (n - gap) =
+                                                         // = 2 + (8n + 24 + (12n + 36) * (i / gap)) * (n - gap)
                 {
-                    _nOp += 2;
+                    int curr = this[i]; // +1 +(4n + 8) 
+                    _nop++;
                     
-                    int curr = this[i]; // 2
-                    int j = i; // 2
-                    _nOp += 4;
-                    
-                    while (j > 0 && this[j - gap] > curr) // 5
-                    {
-                        _nOp += 5;
-                        
-                        this[j] = this[j - gap]; // 3
-                        j -= gap; // 2
-                        _nOp += 2;
+                    int j = i; // + 1
+                    _nop++;
 
-                        _nOp += 2;
-                        if (j - gap < 0) break;
+                    _nop += 4; 
+                    while (j > 0 && this[j - gap] > curr) // 
+                    {
+                        this[j] = this[j - gap]; // 4n + 8 + 1 + 4n + 8 =
+                                                 // = 8n + 16
+                        _nop++;
+                        
+                        j -= gap; // + 1
+                        _nop++;
+
+                        _nop += 2;
+                        if (j - gap < 0) break; // +2
+                        
+                        _nop += 4;
                     }
 
-                    this[j] = curr;
-                    _nOp++;
+                    this[j] = curr; // 4n + 8
                 }
 
-                gap /= 2;
-                _nOp += 2;
+                gap /= 2; // + 1
+                _nop++;
             }
         }
         
@@ -142,11 +157,23 @@ namespace StackShellSort
 
         public void Sort()
         {
+            Stopwatch start = new Stopwatch();
+            start.Start();
+            
             Console.WriteLine("Sorting...");
             ShellSort();
-            Console.WriteLine($"N_op = {_nOp}");
+            
             Show();
-            _nOp = 0;
+            
+            TimeSpan end = start.Elapsed;
+            Console.WriteLine($"N = {_stack.Count}");
+            Console.WriteLine($"Time = {end}");
+            Console.WriteLine($"N_op = {_nop}");
+            Console.WriteLine($"Calculated F(N) = {CalcFn(_stack.Count)}");
+            Console.WriteLine($"Calculated O(F(N)) = {CalcOfn(_stack.Count)}");
+            _nop = 0;
+            
+            start.Reset();
         }
     }
 }
